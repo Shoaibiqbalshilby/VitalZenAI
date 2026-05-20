@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "28912157574",
+    "project_id": "vitalzen-31a55",
+    "storage_bucket": "vitalzen-31a55.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28912157574:android:05c12d4132866adda9a207",
+        "android_client_info": {
+          "package_name": "com.vitalzen.ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqZmbNosU5cjKHWxB5gDoBj0RlL5cyUBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
