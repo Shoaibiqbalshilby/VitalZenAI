@@ -186,6 +186,11 @@ fun SettingsScreen(
                     subtitle = "Review the terms that govern the app",
                     onClick = { openUrl(context, TERMS_OF_USE_URL) }
                 )
+                SettingsActionRow(
+                    title = "Friction log",
+                    subtitle = "Open the latest product friction log",
+                    onClick = { openUrl(context, FRICTION_LOG_URL) }
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -380,3 +385,4 @@ private fun openUrl(context: android.content.Context, url: String) {
 
 private const val PRIVACY_POLICY_URL = "https://vitalzen.ai/privacy"
 private const val TERMS_OF_USE_URL = "https://vitalzen.ai/terms"
+private const val FRICTION_LOG_URL = "https://github.com/Shoaibiqbalshilby/VitalZenAI/blob/main/FRICTION_LOG.md"
