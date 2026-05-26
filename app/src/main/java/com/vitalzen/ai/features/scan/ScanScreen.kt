@@ -42,7 +42,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.delay
 
 @Composable
@@ -55,6 +54,10 @@ fun ScanScreen(
     val metrics by viewModel.liveMetrics.collectAsState()
 
     val context = LocalContext.current
+    val measurementLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { viewModel.onMeasurementActivityClosed() }
+    )
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -78,21 +81,14 @@ fun ScanScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-        // Fullscreen Camera Preview
         CameraPreviewLayer()
-
-        // Face Alignment Overlay
         FaceAlignmentOverlay(isScanning = uiState is MeasurementState.Scanning)
-
-        // Top Header
         ScanHeader(onClose = onClose)
 
-        // Scanning Animation & Progress
         if (uiState is MeasurementState.Scanning) {
             ScanningIndicator(progress = (uiState as MeasurementState.Scanning).progress)
         }
 
-        // Bottom Panel
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -110,27 +106,25 @@ fun ScanScreen(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 MetricsSection(metrics)
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
                 WaveformsSection(metrics)
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 ActionButtons(
                     uiState = uiState,
-                    onStart = viewModel::startScan,
+                    onStart = {
+                        viewModel.startScan()
+                        if (viewModel.uiState.value !is MeasurementState.Error) {
+                            measurementLauncher.launch(viewModel.createMeasurementIntent())
+                        }
+                    },
                     onStop = viewModel::stopScan,
                     onFinished = onScanFinished
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-                
                 DisclaimerText()
             }
         }
 
-        // Completion Animation Overlay
         if (uiState is MeasurementState.Finished) {
             CompletionOverlay(onNavigate = onScanFinished)
         }
@@ -154,12 +148,14 @@ fun CameraPreviewLayer() {
                 val preview = Preview.Builder().build().also {
                     it.setSurfaceProvider(previewView.surfaceProvider)
                 }
-                val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
                 try {
                     cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        CameraSelector.DEFAULT_FRONT_CAMERA,
+                        preview
+                    )
+                } catch (_: Exception) {
                 }
             }, executor)
             previewView

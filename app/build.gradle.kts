@@ -16,16 +16,26 @@ val keyProperties = Properties().apply {
     }
 }
 
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+
+fun String.escapeForBuildConfig(): String =
+    replace("\\", "\\\\").replace("\"", "\\\"")
+
 android {
     namespace = "com.vitalzen.ai"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.vitalzen.ai"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 36
+        versionCode = 3
+        versionName = "3.0"
 
         multiDexEnabled = true
 
@@ -33,6 +43,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField(
+            "String",
+            "SMARTSPECTRA_API_KEY",
+            "\"${localProperties.getProperty("SMARTSPECTRA_API_KEY", "").escapeForBuildConfig()}\""
+        )
     }
 
 
@@ -132,7 +147,7 @@ dependencies {
     implementation(libs.mp.android.chart)
 
     // SmartSpectra SDK (Assuming it might be a local dependency or added via maven in settings.gradle)
-    // implementation("com.smartspectra:sdk:1.0.0")
+    implementation(libs.smartspectra)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

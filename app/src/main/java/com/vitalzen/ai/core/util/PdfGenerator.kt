@@ -41,7 +41,7 @@ object PdfGenerator {
         history.take(20).forEach { item ->
             canvas.drawText(SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()).format(Date(item.timestamp)), 40f, yPos, paint)
             canvas.drawText("${item.heartRate}", 200f, yPos, paint)
-            canvas.drawText("${item.oxygenLevel}%", 280f, yPos, paint)
+            canvas.drawText(if (item.oxygenLevel > 0) "${item.oxygenLevel}%" else "--", 280f, yPos, paint)
             canvas.drawText("${item.wellnessScore}", 360f, yPos, paint)
             canvas.drawText(item.mood, 440f, yPos, paint)
             yPos += 20f

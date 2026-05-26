@@ -125,7 +125,10 @@ fun VitalsCard(vitals: Vitals) {
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 VitalsInfoItem(label = "HR", value = "${vitals.heartRate} bpm")
-                VitalsInfoItem(label = "SpO2", value = "${vitals.oxygenLevel}%")
+                VitalsInfoItem(
+                    label = "SpO2",
+                    value = if (vitals.oxygenLevel > 0) "${vitals.oxygenLevel}%" else "--"
+                )
                 VitalsInfoItem(label = "Stress", value = vitals.stressLevel)
             }
         }
