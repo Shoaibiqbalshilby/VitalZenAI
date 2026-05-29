@@ -25,3 +25,6 @@ If scan capture quality drops, corrective steps should be immediate and specific
 
 ## 8) International readiness
 Language options exist, but users may expect localized legal/help content as well.
+
+## 9) First Submission on Play Store Rejected 
+Due to health activity, app get Rejected, fix it by updating the  metadata of App Content and submit again, and app is in Review to publish
